@@ -10,6 +10,7 @@
 #import "NearByViewController.h"
 #import "OrderLIstViewController.h"
 #import "DSFoodViewController.h"
+#import "MyFavoriteViewController.h"
 
 @interface CustomViewController ()
 {
@@ -89,8 +90,20 @@
             }
                 break;
             case 4:
-                NSLog(@"OrderLIstViewController");
-                viewControllerId = @"OrderLIstViewController";                break;
+            {
+                AppDelegate *myDelegate = [[UIApplication sharedApplication] delegate];
+                if (!myDelegate.uid) {
+                    UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                    LoginViewController *lvc = [story instantiateViewControllerWithIdentifier:@"LoginViewController"];
+                    [self.navigationController pushViewController:lvc animated:YES];
+                }
+                else{
+                    UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                    MyFavoriteViewController *nyvc = [story instantiateViewControllerWithIdentifier:@"MyFavoriteViewController"];
+                    [self.navigationController pushViewController:nyvc animated:YES];
+                }
+            }
+                break;
             case 5:
                 NSLog(@"OrderLIstViewController");
                 viewControllerId = @"OrderLIstViewController";                break;
@@ -100,7 +113,7 @@
         
         [_sideSlipView hide];
     }];
-    menu.items = @[@{@"title":@"周边美食",@"imagename":@"1"},@{@"title":@"我的订单",@"imagename":@"2"},@{@"title":@"美食商城",@"imagename":@"3"},@{@"title":@"商城订单",@"imagename":@"4"},@{@"title":@"我的收藏",@"imagename":@"5"},@{@"title":@"关于我们",@"imagename":@"6"}];
+    menu.items = @[@{@"title":@"周边美食",@"imagename":@"zbms"},@{@"title":@"我的订单",@"imagename":@"order"},@{@"title":@"美食商城",@"imagename":@"meishi"},@{@"title":@"商城订单",@"imagename":@"order"},@{@"title":@"我的收藏",@"imagename":@"fav"},@{@"title":@"关于我们",@"imagename":@"aboutus"}];
     menu.tag = 1000;
     AppDelegate *myDelegate = [[UIApplication sharedApplication] delegate];
     if(myDelegate.uid){
@@ -127,16 +140,8 @@
 -(void)goTologin{
     UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     LoginViewController *lvc = [story instantiateViewControllerWithIdentifier:@"LoginViewController"];
-    //    [self.navigationController.navigationBar setHidden:NO];
-//    self.navigationController.navigationBar.hidden = NO;
     [self showSideSlipView];
     [self.navigationController pushViewController:lvc animated:YES];
-    
-    //    [self addChildViewController:lvc];
-    //    [self.view addSubview:lvc.view];
-    //    [lvc didMoveToParentViewController:self];
-    //    [self presentViewController:lvc animated:YES completion:nil];
-    
 }
 
 

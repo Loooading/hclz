@@ -7,6 +7,7 @@
 //
 
 #import "NearByViewController.h"
+#import "BaiduMapViewController.h"
 
 @interface NearByViewController () <UITableViewDataSource, UITableViewDelegate, SINavigationMenuDelegate>
 {
@@ -24,18 +25,42 @@
     [self addMenuButton];
     [self addNavigationMenuView];
     [self requestDataWithType:@"0"];
+    [self addNavRightButton];
+
     itemsArray = @[@"社区店", @"校园店", @"商务店"];
-    
+}
+
+-(void)addNavRightButton{
+    UIImage *imgNormal = [UIImage imageNamed:@"add_fav"];
+    UIButton *butt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
+    [butt setImage:imgNormal forState:UIControlStateNormal];
+    [butt addTarget:self action:@selector(showBaiduMapView) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithCustomView:butt];
+    //    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithImage:imgNormal style:UIBarButtonItemStyleBordered target:self action:@selector(addFavorite)];
+    //    rightButton.frame
+    self.navigationItem.rightBarButtonItem = rightButton;
+}
+-(void)showBaiduMapView
+{
+    [self performSegueWithIdentifier:@"showBaiduMap" sender:nil];
+
 }
 
 #pragma mark - Request Data
 
 - (void)requestDataWithType:(NSString *)type{
+    AppDelegate *myDelegate = [[UIApplication sharedApplication] delegate];
     NSString *path = [[NSString alloc] initWithFormat:@"/TakeOut/action/msg_shopNearby"];
     NSMutableDictionary *para = [[NSMutableDictionary alloc] init];
     [para setValue:type forKey:@"type"];
-    [para setValue:@"26.456654" forKey:@"latitude"];
-    [para setValue:@"116.12516" forKey:@"longitude"];
+    NSString *lat = [[NSString alloc] initWithFormat:@"%f", myDelegate.latitude ];
+    NSString *lon = [[NSString alloc] initWithFormat:@"%f", myDelegate.longitude ];
+    
+    [para setValue:lat forKey:@"latitude"];
+    [para setValue:lon forKey:@"longitude"];
+
+//    [para setValue:@"26.456654" forKey:@"latitude"];
+//    [para setValue:@"116.12516" forKey:@"longitude"];
     [para setValue:@"100" forKey:@"amount"];
     
     MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"101.200.179.69:8080" customHeaderFields:nil];
@@ -143,8 +168,12 @@
         fv.deliver_charge = [[shopInfo valueForKey:@"shops"] valueForKey:@"deliver_charge"];
         NSString *title = [[shopInfo valueForKey:@"shops"] valueForKey:@"shop_name"];
         fv.navigationItem.title = title;
-
     }
+    if ([segue.identifier isEqualToString:@"showBaiduMap"]) {
+        BaiduMapViewController *bmv = segue.destinationViewController;
+        bmv.shopList = _shopList;
+    }
+
     
 }
 

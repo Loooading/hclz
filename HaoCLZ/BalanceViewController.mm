@@ -50,7 +50,25 @@
     {
         NSLog(@"反geo检索发送失败");
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fixedCompletion:) name:@"FixCompletionNontification" object:nil];
 
+}
+
+-(void)fixedCompletion:(NSNotification *)notification{
+    NSDictionary *theDate = [notification userInfo];
+    NSString *nickname = [theDate valueForKey:@"nickname"];
+    NSString *address = [theDate valueForKey:@"address"];
+    NSString *phone = [theDate valueForKey:@"phone"];
+    if (![nickname isEqualToString:@""]) {
+        self.nick_name_label.text = nickname;
+    }
+    if (![address isEqualToString:@""]) {
+        self.service_address_label.text = address;
+    }
+    if (![phone isEqualToString:@""]) {
+        self.phone_label.text = phone;
+    }
 }
 
 //接收反向地理编码结果
@@ -92,7 +110,7 @@
         path = [[NSString alloc] initWithFormat:@"/TakeOut/action/modify_orderAdd"];
     }
     NSMutableDictionary *para = [[NSMutableDictionary alloc] init];
-    [para setValue:@"25" forKey:@"uid"];
+    [para setValue:myDelegate.uid forKey:@"uid"];
 
     [para setValue:self.shop_id forKey:@"shop_id"];
     [para setValue:self.foodAmount forKey:@"foodAmount"];

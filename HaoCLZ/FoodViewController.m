@@ -15,6 +15,7 @@
     int foodNumber;
     NSString *foodAmount;
     NSMutableArray *_shopCarInfoArray;
+    
 }
 
 @end
@@ -26,8 +27,55 @@
     // Do any additional setup after loading the view.
     
     _shopCarInfoArray = [[NSMutableArray alloc] init];
-
+    [self addNavRightButton];
     [self requestData];
+}
+-(void)addNavRightButton{
+    UIImage *imgNormal = [UIImage imageNamed:@"add_fav"];
+    UIButton *butt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
+    [butt setImage:imgNormal forState:UIControlStateNormal];
+    [butt addTarget:self action:@selector(addFavorite) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithCustomView:butt];
+//    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithImage:imgNormal style:UIBarButtonItemStyleBordered target:self action:@selector(addFavorite)];
+//    rightButton.frame
+    self.navigationItem.rightBarButtonItem = rightButton;
+
+}
+-(void)addFavorite
+{
+    AppDelegate *myDelegate = [[UIApplication sharedApplication] delegate];
+    if (!myDelegate.uid) {
+        UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        LoginViewController *lvc = [story instantiateViewControllerWithIdentifier:@"LoginViewController"];
+        [self.navigationController pushViewController:lvc animated:YES];
+    }
+    else{
+        NSString *path = [[NSString alloc] initWithFormat:@"/TakeOut/action/modify_collectionAdd"];
+      
+        NSMutableDictionary *para = [[NSMutableDictionary alloc] init];
+        
+        [para setValue:myDelegate.uid forKey:@"uid"];
+        [para setValue:@"1" forKey:@"type"];
+        [para setValue:self.shop_id forKey:@"shop_id"];
+        
+        MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"101.200.179.69:8080" customHeaderFields:nil];
+        MKNetworkOperation *op = [engine operationWithPath:path params:para httpMethod:@"POST"];
+        [op addCompletionHandler:^(MKNetworkOperation *operation){
+            NSLog(@"respons string : %@", [operation responseString]);
+            NSData *data = [operation responseData];
+            NSDictionary *resDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+            if(![[resDic valueForKey:@"status"] intValue])
+            {
+                [CustomViewController showMessage:@"收藏成功!"];
+            }
+            else{
+                [CustomViewController showMessage:[resDic valueForKey:@"message"]];
+            }
+        }errorHandler:^(MKNetworkOperation *errorOp, NSError *err){
+            NSLog(@"请求错误 : %@", [err localizedDescription]);
+        }];
+        [engine enqueueOperation:op];
+    }
 }
 
 -(void)popFrontView
@@ -107,8 +155,8 @@
         UIButton *minusBt = (UIButton *)[cell.contentView viewWithTag:(indexPath.row+100)];
         //通过tag获得减按钮,如没有则新建并添加到cell
         if (!minusBt) {
-             minusBt = [[UIButton alloc] initWithFrame:CGRectMake(178, 21, 30, 30)];
-            minusBt.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+             minusBt = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width / 3 * 2 - 40, 21, 30, 30)];
+            minusBt.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
             [minusBt setBackgroundColor:[UIColor colorWithRed:40.0/255 green:125.0/255 blue:193.0/255 alpha:1]];
             [minusBt setTitle:@"—" forState:UIControlStateNormal];
             [minusBt.titleLabel setTextColor:[UIColor whiteColor]];
@@ -234,8 +282,8 @@
         scv.shop_phone = self.shop_phone;
         scv.shop_logo = self.shop_logo;
         scv.deliver_charge = self.deliver_charge;
-        //请求类型,0为店铺,1为电子商城
-        scv.foodRequestType = 0;
+        //请求类型,1为店铺,0为电子商城
+        scv.foodRequestType = 1;
         scv.navigationController.title = @"美食篮子";
     }
     

@@ -61,6 +61,14 @@
             myDelegate.nickname = [resDic valueForKey:@"nickname"];
             myDelegate.phone = [resDic valueForKey:@"phone"];
             myDelegate.password = [resDic valueForKey:@"password"];
+            //保存用户数据到本地,记录登录状态
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            [userDefaults setObject:[resDic valueForKey:@"uid"] forKey:@"uid"];
+            [userDefaults setObject:[resDic valueForKey:@"nickname"] forKey:@"nickname"];
+            [userDefaults setObject:[resDic valueForKey:@"phone"] forKey:@"phone"];
+            [userDefaults setObject:[resDic valueForKey:@"password"] forKey:@"password"];
+            [userDefaults synchronize];
+
             [self performSegueWithIdentifier:@"goToNearBy" sender:nil];
 //            UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
 //            NearByViewController *nyvc = [story instantiateViewControllerWithIdentifier:@"NearByViewController"];

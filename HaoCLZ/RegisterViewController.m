@@ -143,8 +143,8 @@
 
     }
     
-    NSString *inputCodeString = self.validateCode_textField.text;
-    if (![inputCodeString isEqualToString:self.validateCode]) {
+    NSString *inputCodeString = [self.validateCode_textField.text uppercaseString];
+    if (![inputCodeString isEqualToString:[self.validateCode uppercaseString]]) {
         [CustomViewController showMessage:@"验证码错误,请重新输入!"];
         return;
     }

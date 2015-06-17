@@ -63,6 +63,9 @@
 		E755340A1B2C99ED004D7D59 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E75534091B2C99ED004D7D59 /* OpenGLES.framework */; };
 		E755340C1B2C99FC004D7D59 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E755340B1B2C99FC004D7D59 /* CoreGraphics.framework */; };
 		E755340E1B2C9A5A004D7D59 /* mapapi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E755340D1B2C9A5A004D7D59 /* mapapi.bundle */; };
+		E75B20831B2F1D7200AE1C28 /* MyFavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E75B20821B2F1D7200AE1C28 /* MyFavoriteViewController.m */; };
+		E75B20891B2FAFE800AE1C28 /* FixInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E75B20881B2FAFE800AE1C28 /* FixInfoViewController.m */; };
+		E75B208D1B2FB7D800AE1C28 /* BaiduMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E75B208C1B2FB7D800AE1C28 /* BaiduMapViewController.m */; };
 		E7EB59781B2DAFC500908A74 /* OrderLIstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7EB59771B2DAFC500908A74 /* OrderLIstViewController.m */; };
 		E7EB597B1B2DAFD900908A74 /* OrderDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7EB597A1B2DAFD900908A74 /* OrderDetailViewController.m */; };
 		E7EB597E1B2DB0BA00908A74 /* OrderListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E7EB597D1B2DB0BA00908A74 /* OrderListTableViewCell.m */; };
@@ -177,6 +180,12 @@
 		E75534091B2C99ED004D7D59 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		E755340B1B2C99FC004D7D59 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		E755340D1B2C9A5A004D7D59 /* mapapi.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = mapapi.bundle; path = "../../../Downloads/BaiduMap_IOSSDK_v2.7.0_All/BaiduMap_IOSSDK_v2.7.0_Lib/Release-iphoneos/BaiduMapAPI.framework/Resources/mapapi.bundle"; sourceTree = "<group>"; };
+		E75B20811B2F1D7200AE1C28 /* MyFavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyFavoriteViewController.h; sourceTree = "<group>"; };
+		E75B20821B2F1D7200AE1C28 /* MyFavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyFavoriteViewController.m; sourceTree = "<group>"; };
+		E75B20871B2FAFE800AE1C28 /* FixInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FixInfoViewController.h; sourceTree = "<group>"; };
+		E75B20881B2FAFE800AE1C28 /* FixInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FixInfoViewController.m; sourceTree = "<group>"; };
+		E75B208B1B2FB7D800AE1C28 /* BaiduMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaiduMapViewController.h; sourceTree = "<group>"; };
+		E75B208C1B2FB7D800AE1C28 /* BaiduMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaiduMapViewController.m; sourceTree = "<group>"; };
 		E7EB59761B2DAFC500908A74 /* OrderLIstViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderLIstViewController.h; sourceTree = "<group>"; };
 		E7EB59771B2DAFC500908A74 /* OrderLIstViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderLIstViewController.m; sourceTree = "<group>"; };
 		E7EB59791B2DAFD900908A74 /* OrderDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderDetailViewController.h; sourceTree = "<group>"; };
@@ -237,6 +246,8 @@
 		E70F47BD1B256BDB00686D48 /* HaoCLZ */ = {
 			isa = PBXGroup;
 			children = (
+				E75B208A1B2FB74500AE1C28 /* 百度地图 */,
+				E75B20801B2F1D4300AE1C28 /* 我的收藏 */,
 				E7EB597F1B2E7F3100908A74 /* 电子商城 */,
 				E7EB59751B2CC1BA00908A74 /* 订单 */,
 				E75533E41B2C8E72004D7D59 /* NavigationMenuView */,
@@ -394,6 +405,8 @@
 				E70F488C1B2953DC00686D48 /* BalanceViewController.mm */,
 				E70F488E1B298B2500686D48 /* ShopCarTableViewCell.h */,
 				E70F488F1B298B2500686D48 /* ShopCarTableViewCell.m */,
+				E75B20871B2FAFE800AE1C28 /* FixInfoViewController.h */,
+				E75B20881B2FAFE800AE1C28 /* FixInfoViewController.m */,
 			);
 			name = "购物车+结算";
 			sourceTree = "<group>";
@@ -453,6 +466,24 @@
 				E75533E91B2C8E72004D7D59 /* arrow_down@2x.png */,
 			);
 			path = images;
+			sourceTree = "<group>";
+		};
+		E75B20801B2F1D4300AE1C28 /* 我的收藏 */ = {
+			isa = PBXGroup;
+			children = (
+				E75B20811B2F1D7200AE1C28 /* MyFavoriteViewController.h */,
+				E75B20821B2F1D7200AE1C28 /* MyFavoriteViewController.m */,
+			);
+			name = "我的收藏";
+			sourceTree = "<group>";
+		};
+		E75B208A1B2FB74500AE1C28 /* 百度地图 */ = {
+			isa = PBXGroup;
+			children = (
+				E75B208B1B2FB7D800AE1C28 /* BaiduMapViewController.h */,
+				E75B208C1B2FB7D800AE1C28 /* BaiduMapViewController.m */,
+			);
+			name = "百度地图";
 			sourceTree = "<group>";
 		};
 		E7EB59751B2CC1BA00908A74 /* 订单 */ = {
@@ -591,6 +622,7 @@
 				E70F48341B27E00C00686D48 /* NearByTableViewCell.m in Sources */,
 				E70F48291B26716C00686D48 /* CustomViewController.m in Sources */,
 				E70F48981B2B2F7400686D48 /* LoginViewController.m in Sources */,
+				E75B208D1B2FB7D800AE1C28 /* BaiduMapViewController.m in Sources */,
 				E75534011B2C8E72004D7D59 /* SINavigationMenuView.m in Sources */,
 				E75533DC1B2C51C6004D7D59 /* ChangePasswordViewController.m in Sources */,
 				E75533FC1B2C8E72004D7D59 /* SICellSelection.m in Sources */,
@@ -608,6 +640,8 @@
 				E70F488D1B2953DC00686D48 /* BalanceViewController.mm in Sources */,
 				E7EB597B1B2DAFD900908A74 /* OrderDetailViewController.m in Sources */,
 				E7EB59821B2E7FA700908A74 /* DSFoodViewController.m in Sources */,
+				E75B20891B2FAFE800AE1C28 /* FixInfoViewController.m in Sources */,
+				E75B20831B2F1D7200AE1C28 /* MyFavoriteViewController.m in Sources */,
 				E70F48041B25802B00686D48 /* MKNetworkOperation.m in Sources */,
 				E7EB597E1B2DB0BA00908A74 /* OrderListTableViewCell.m in Sources */,
 				E70F48011B25802B00686D48 /* UIAlertView+MKNetworkKitAdditions.m in Sources */,
@@ -749,6 +783,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer: hujun 刘 (SCJ5K575SL)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/liuhujun/Downloads/BaiduMap_IOSSDK_v2.7.0_All/BaiduMap_IOSSDK_v2.7.0_Lib/Release-iphoneos",
@@ -761,6 +796,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "b5a50958-5773-47e8-9c41-f6aad0faa949";
 			};
 			name = Debug;
 		};
@@ -768,6 +804,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer: hujun 刘 (SCJ5K575SL)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/liuhujun/Downloads/BaiduMap_IOSSDK_v2.7.0_All/BaiduMap_IOSSDK_v2.7.0_Lib/Release-iphoneos",
@@ -780,6 +817,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "b5a50958-5773-47e8-9c41-f6aad0faa949";
 			};
 			name = Release;
 		};

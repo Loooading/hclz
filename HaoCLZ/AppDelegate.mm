@@ -27,6 +27,18 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    //通过本地UserDefault判断是否登录
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSLog(@"%@",[userDefaults objectForKey:@"nickname"]);
+    if(![[[userDefaults objectForKey:@"uid"] stringValue] isEqualToString:@""])
+    {
+        self.nickname = [userDefaults objectForKey:@"nickname"];
+        self.uid = [userDefaults objectForKey:@"uid"];
+        self.phone = [userDefaults objectForKey:@"phone"];
+        self.password = [userDefaults objectForKey:@"password"];
+    }
+
     // Override point for customization after application launch.
     _mapManager = [[BMKMapManager alloc]init];
     // 如果要关注网络及授权验证事件，请设定     generalDelegate参数
@@ -64,7 +76,6 @@
     {
         NSLog(@"反geo检索发送失败");
     }
-
     
     // Add the navigation controller's view to the window and display.
 //    [self.window addSubview:navigationController.view];

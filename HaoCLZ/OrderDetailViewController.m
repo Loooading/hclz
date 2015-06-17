@@ -7,6 +7,7 @@
 //
 
 #import "OrderDetailViewController.h"
+#import "OrderLIstViewController.h"
 
 @interface OrderDetailViewController ()
 
@@ -124,10 +125,16 @@
         if(![[resDic valueForKey:@"status"] intValue])
         {
             [CustomViewController showMessage:[resDic valueForKey:@"message"]];
-            [self performSegueWithIdentifier:@"goToOrderList" sender:nil];
+//            [self performSegueWithIdentifier:@"goToOrderList" sender:nil];
+//            [self.navigationController popViewControllerAnimated:YES];
+            UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            OrderLIstViewController *nyvc = [story instantiateViewControllerWithIdentifier:@"OrderLIstViewController"];
+            nyvc.orderRequestType = self.orderRequestType;
+            [self.navigationController pushViewController:nyvc animated:YES];
         }
         else{
-            [CustomViewController showMessage:@"操作成功"];
+            [CustomViewController showMessage:[resDic valueForKey:@"message"]];
+
         }
     }errorHandler:^(MKNetworkOperation *errorOp, NSError *err){
         NSLog(@"请求错误 : %@", [err localizedDescription]);

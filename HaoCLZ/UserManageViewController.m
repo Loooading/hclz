@@ -8,8 +8,10 @@
 
 #import "UserManageViewController.h"
 
-@interface UserManageViewController ()
-
+@interface UserManageViewController () <BMKGeoCodeSearchDelegate>
+{
+    BMKGeoCodeSearch *_searcher;
+}
 @end
 
 @implementation UserManageViewController
@@ -19,8 +21,41 @@
     // Do any additional setup after loading the view.
     AppDelegate *myDelegate = [[UIApplication sharedApplication] delegate];
     self.nickname_label.text = myDelegate.nickname;
+    //初始化地理编码检索
+    _searcher =[[BMKGeoCodeSearch alloc]init];
+    _searcher.delegate = self;
+    //发起反向地理编码检索
+    CLLocationCoordinate2D pt = (CLLocationCoordinate2D){myDelegate.latitude, myDelegate.longitude};
+    //    CLLocationCoordinate2D pt = (CLLocationCoordinate2D){39.915, 116.404};
     
+    BMKReverseGeoCodeOption *reverseGeoCodeSearchOption = [[BMKReverseGeoCodeOption alloc]init];
+    reverseGeoCodeSearchOption.reverseGeoPoint = pt;
+    BOOL flag = [_searcher reverseGeoCode:reverseGeoCodeSearchOption];
+    //    [reverseGeoCodeSearchOption release];
+    if(flag)
+    {
+        NSLog(@"反geo检索发送成功");
+    }
+    else
+    {
+        NSLog(@"反geo检索发送失败");
+    }
 }
+
+//接收反向地理编码结果
+-(void) onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:
+(BMKReverseGeoCodeResult *)result
+                        errorCode:(BMKSearchErrorCode)error{
+    if (error == BMK_SEARCH_NO_ERROR) {
+        //在此处理正常结果
+        NSLog(@"%@", result.address);
+        self.address_label.text = result.address;
+    }
+    else {
+        NSLog(@"抱歉，未找到结果");
+    }
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
