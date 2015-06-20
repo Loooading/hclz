@@ -17,6 +17,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self.navigationController setNavigationBarHidden:NO];
     self.foodImageView.image = self.food_image;
     self.foodName_label.text = self.food_name;
     self.foodPrice_label.text = self.food_price;

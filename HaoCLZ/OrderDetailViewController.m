@@ -18,6 +18,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self.navigationController setNavigationBarHidden:NO];
+
     NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [_orderDetailInfo valueForKey:@"shop_logo"]];
     NSURL *imageUrl = [NSURL URLWithString:stringURL];
     NSData *imgData = [NSData dataWithContentsOfURL:imageUrl];
@@ -73,12 +75,30 @@
 }
 
 - (IBAction)comfirm:(id)sender {
-    [self changeOrder:0];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您确定要确认此订单吗?确认订单后交易完成!" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+    //设置UIAlertView的tag,与请求数据的类型相同.
+    [alert setTag:0];
+    [alert show];
+//    [self changeOrder:0];
 }
 
 - (IBAction)deleOrder:(id)sender {
-    [self changeOrder:1];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您确定要删除此订单吗?" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+    //设置UIAlertView的tag,与请求数据的类型相同.
+    [alert setTag:1];
+    [alert show];
+//    [self changeOrder:1];
 }
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+        if (buttonIndex == 0) {     // and they clicked OK.
+            //通过alertView的tag得到请求类型
+            [self changeOrder:[alertView tag]];
+        }
+}
+
+
+
 //删除或确认订单,1为删除,0为确认
 -(void) changeOrder:(NSUInteger) type
 {
@@ -124,9 +144,13 @@
         NSDictionary *resDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
         if(![[resDic valueForKey:@"status"] intValue])
         {
-            [CustomViewController showMessage:[resDic valueForKey:@"message"]];
-//            [self performSegueWithIdentifier:@"goToOrderList" sender:nil];
-//            [self.navigationController popViewControllerAnimated:YES];
+            if(type == 1)
+            {
+                [CustomViewController showMessage:@"订单删除成功!"];
+            }
+            else{
+                [CustomViewController showMessage:@"确认收货,交易完成!"];
+            }
             UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             OrderLIstViewController *nyvc = [story instantiateViewControllerWithIdentifier:@"OrderLIstViewController"];
             nyvc.orderRequestType = self.orderRequestType;

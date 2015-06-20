@@ -25,7 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    [self.navigationController setNavigationBarHidden:NO];
     _shopCarInfoArray = [[NSMutableArray alloc] init];
     [self addNavRightButton];
     [self requestData];

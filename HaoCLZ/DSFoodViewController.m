@@ -111,7 +111,7 @@
         UIButton *minusBt = (UIButton *)[cell.contentView viewWithTag:(indexPath.row+100)];
         //通过tag获得减按钮,如没有则新建并添加到cell
         if (!minusBt) {
-            minusBt = [[UIButton alloc] initWithFrame:CGRectMake(178, 21, 30, 30)];
+            minusBt = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width / 3 * 2 - 40, 21, 30, 30)];
             minusBt.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
             [minusBt setBackgroundColor:[UIColor colorWithRed:40.0/255 green:125.0/255 blue:193.0/255 alpha:1]];
             [minusBt setTitle:@"—" forState:UIControlStateNormal];

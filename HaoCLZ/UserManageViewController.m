@@ -80,6 +80,13 @@
     myDelegate.phone = nil;
     myDelegate.password = nil;
     [self performSegueWithIdentifier:@"goToNearby" sender:nil];
-    
+    //退出登录,清除所有userdefault数据
+//    [NSUserDefaults resetStandardUserDefaults];
+    NSDictionary *defaultsDictionary = [[NSUserDefaults standardUserDefaults]dictionaryRepresentation];
+    for (NSString *key in [defaultsDictionary allKeys]) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
 }
 @end

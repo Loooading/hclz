@@ -8,7 +8,7 @@
 
 #import "CustomViewController.h"
 
-@interface OrderDetailViewController : CustomViewController
+@interface OrderDetailViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UILabel *orderState_label;
 @property (weak, nonatomic) IBOutlet UILabel *date_label;
 @property (weak, nonatomic) IBOutlet UILabel *date1_label;
