@@ -31,8 +31,8 @@
 }
 
 -(void)addNavRightButton{
-    UIImage *imgNormal = [UIImage imageNamed:@"add_fav"];
-    UIButton *butt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
+    UIImage *imgNormal = [UIImage imageNamed:@"map"];
+    UIButton *butt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     [butt setImage:imgNormal forState:UIControlStateNormal];
     [butt addTarget:self action:@selector(showBaiduMapView) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithCustomView:butt];

@@ -130,18 +130,19 @@
     NSMutableDictionary *orderInfo = _orderList[row];
     if (!self.orderRequestType)
     {
-//        NSArray *foodAmountArray = [orderInfo valueForKey:@"foodAmount"];
-//        NSString *foodAmountString;
-//        for (int i = 0; i<foodAmountArray.count; i++) {
-//            NSDictionary *foodAmountDic = foodAmountArray[i];
-//            foodAmountString = [foodAmountString stringByAppendingString:[foodAmountDic valueForKey:@"food_num"]];
-//            foodAmountString = [foodAmountString stringByAppendingString:@""];
-//            foodAmountString = [foodAmountString stringByAppendingString:[foodAmountDic valueForKey:@"food_name"]];
-//            foodAmountString = [foodAmountString stringByAppendingString:@";"];
-//            cell.foodAmount_label.text = foodAmountString;
-//
-//        }
-        cell.foodAmount_label.text = [orderInfo valueForKey:@"foodAmount"];
+        
+        NSData *data = [[orderInfo valueForKey:@"foodAmount"] dataUsingEncoding:NSUTF8StringEncoding];
+        NSArray *foodAmountArray =[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        NSString *foodAmountString = @"";
+        for (NSMutableDictionary *foodAmountDic in foodAmountArray) {
+            
+            NSString *foodNumberTmp = [[NSString alloc] initWithFormat:@"%@份", [foodAmountDic  valueForKey:@"food_num"]];
+            foodAmountString = [foodAmountString stringByAppendingString:foodNumberTmp];
+            foodAmountString = [foodAmountString stringByAppendingString:[foodAmountDic valueForKey:@"food_name"]];
+            foodAmountString = [foodAmountString stringByAppendingString:@";"];
+        }
+
+        cell.foodAmount_label.text = foodAmountString;
         cell.shop_name_logo.text = @"电子商城";
     }
     else{

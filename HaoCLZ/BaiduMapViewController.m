@@ -56,7 +56,7 @@
 //    [butt setImage:imgNormal forState:UIControlStateNormal];
 //    [butt addTarget:self action:@selector(showBaiduMapView) forControlEvents:UIControlEventTouchUpInside];
 //    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithCustomView:butt];
-        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"开始定位" style:UIBarButtonItemStyleBordered target:self action:@selector(startLocate)];
+        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"定位" style:UIBarButtonItemStyleBordered target:self action:@selector(startLocate)];
     //    rightButton.frame
     self.navigationItem.rightBarButtonItem = rightButton;
 }

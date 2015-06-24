@@ -31,7 +31,17 @@
     self.shop_name_label.text = [_orderDetailInfo valueForKey:@"shop_name"];
     if (!self.orderRequestType)
     {
-        self.foodAmount_label.text = [_orderDetailInfo valueForKey:@"foodAmount"];
+        NSData *data = [[_orderDetailInfo valueForKey:@"foodAmount"] dataUsingEncoding:NSUTF8StringEncoding];
+        NSArray *foodAmountArray =[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        NSString *foodAmountString = @"";
+        for (NSMutableDictionary *foodAmountDic in foodAmountArray) {
+            
+            NSString *foodNumberTmp = [[NSString alloc] initWithFormat:@"%@份", [foodAmountDic  valueForKey:@"food_num"]];
+            foodAmountString = [foodAmountString stringByAppendingString:foodNumberTmp];
+            foodAmountString = [foodAmountString stringByAppendingString:[foodAmountDic valueForKey:@"food_name"]];
+            foodAmountString = [foodAmountString stringByAppendingString:@";"];
+        }
+        self.foodAmount_label.text = foodAmountString;
         self.shop_name_label.text = @"电子商城";
     }
     else{

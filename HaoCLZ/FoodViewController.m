@@ -32,7 +32,7 @@
 }
 -(void)addNavRightButton{
     UIImage *imgNormal = [UIImage imageNamed:@"add_fav"];
-    UIButton *butt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
+    UIButton *butt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     [butt setImage:imgNormal forState:UIControlStateNormal];
     [butt addTarget:self action:@selector(addFavorite) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithCustomView:butt];
@@ -188,11 +188,11 @@
     //界面显示设置
     float minusPrice = [[dic valueForKey:@"price"] floatValue];
     allPrice -= minusPrice;
-    NSString *totalPrice = [[NSString alloc] initWithFormat:@"共￥%.1f", allPrice];
+    NSString *totalPrice = [[NSString alloc] initWithFormat:@"￥%.1f", allPrice];
     self.totalPrice.text = totalPrice;
     
     foodNumber -= 1;
-    self.foodNumber.text = [[NSString alloc] initWithFormat:@"%i份", foodNumber];
+    self.foodNumber.text = [[NSString alloc] initWithFormat:@"%i份美食", foodNumber];
 
     FoodTableViewCell *cell = (FoodTableViewCell *)[[bt superview] superview];
     int num =  [cell.number.text intValue];
@@ -216,11 +216,11 @@
     NSDictionary *dic = [_foodList objectAtIndex:rowIndex];
     float addPrice = [[dic valueForKey:@"price"] floatValue];
     allPrice += addPrice;
-    NSString *totalPrice = [[NSString alloc] initWithFormat:@"共￥%.1f", allPrice];
+    NSString *totalPrice = [[NSString alloc] initWithFormat:@"￥%.1f", allPrice];
     self.totalPrice.text = totalPrice;
     
     foodNumber += 1;
-    self.foodNumber.text = [[NSString alloc] initWithFormat:@"%i份", foodNumber];
+    self.foodNumber.text = [[NSString alloc] initWithFormat:@"%i份美食", foodNumber];
     
     FoodTableViewCell *cell = (FoodTableViewCell *)[[bt superview] superview];
     int num =  [cell.number.text intValue];
