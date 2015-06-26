@@ -51,17 +51,18 @@
 }
 
 -(void)addNavRightButton{
-//    UIImage *imgNormal = [UIImage imageNamed:@"add_fav"];
-//    UIButton *butt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
-//    [butt setImage:imgNormal forState:UIControlStateNormal];
-//    [butt addTarget:self action:@selector(showBaiduMapView) forControlEvents:UIControlEventTouchUpInside];
-//    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithCustomView:butt];
-        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"定位" style:UIBarButtonItemStyleBordered target:self action:@selector(startLocate)];
-    //    rightButton.frame
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"定位" style:UIBarButtonItemStyleBordered target:self action:@selector(startLocate)];
     self.navigationItem.rightBarButtonItem = rightButton;
 }
 
 -(void)startLocate{
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8) {
+        //由于IOS8中定位的授权机制改变 需要进行手动授权
+        CLLocationManager  *locationManager = [[CLLocationManager alloc] init];
+        //获取授权认证
+        [locationManager requestAlwaysAuthorization];
+        [locationManager requestWhenInUseAuthorization];
+    }
     [_locService startUserLocationService];
     _mapView.showsUserLocation = NO;//先关闭显示的定位图层
     _mapView.userTrackingMode = BMKUserTrackingModeNone;//设置定位的状态
@@ -119,7 +120,17 @@
 - (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation
 {
     NSLog(@"didUpdateUserLocation lat %f,long %f",userLocation.location.coordinate.latitude,userLocation.location.coordinate.longitude);
-    [_mapView updateLocationData:userLocation];
+//    [_mapView updateLocationData:userLocation];
+    BMKCoordinateRegion region;
+    region.center.latitude  = userLocation.location.coordinate.latitude;
+    region.center.longitude = userLocation.location.coordinate.longitude;
+    region.span.latitudeDelta  = 0.1;
+    region.span.longitudeDelta = 0.1;
+    if (_mapView)
+    {
+        _mapView.region = region;
+        NSLog(@"当前的坐标是: %f,%f",userLocation.location.coordinate.latitude,userLocation.location.coordinate.longitude);
+    }
 }
 
 /**

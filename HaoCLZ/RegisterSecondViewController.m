@@ -44,7 +44,7 @@
     [para setValue:self.email_textfield.text forKey:@"email"];
     [para setValue:self.nickname_textfield.text forKey:@"nickname"];
 
-    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"101.200.179.69:8080" customHeaderFields:nil];
+    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:hostName customHeaderFields:nil];
     MKNetworkOperation *op = [engine operationWithPath:path params:para httpMethod:@"POST"];
     [op addCompletionHandler:^(MKNetworkOperation *operation){
         NSLog(@"respons string : %@", [operation responseString]);

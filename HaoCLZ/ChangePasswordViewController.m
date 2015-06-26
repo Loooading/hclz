@@ -54,7 +54,7 @@
     [para setValue:self.newpass_label.text forKey:@"new_password"];
     [para setValue:myDelegate.uid forKey:@"uid"];
     
-    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"101.200.179.69:8080" customHeaderFields:nil];
+    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:hostName customHeaderFields:nil];
     MKNetworkOperation *op = [engine operationWithPath:path params:para httpMethod:@"POST"];
     [op addCompletionHandler:^(MKNetworkOperation *operation){
         NSLog(@"respons string : %@", [operation responseString]);

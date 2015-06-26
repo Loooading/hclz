@@ -47,7 +47,7 @@
     NSMutableDictionary *para = [[NSMutableDictionary alloc] init];
     [para setValue:self.username_textField.text forKey:@"userName"];
     [para setValue:self.password_textFiled.text forKey:@"password"];
-    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"101.200.179.69:8080" customHeaderFields:nil];
+    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:hostName customHeaderFields:nil];
     MKNetworkOperation *op = [engine operationWithPath:path params:para httpMethod:@"GET"];
     [op addCompletionHandler:^(MKNetworkOperation *operation){
         NSLog(@"respons string : %@", [operation responseString]);

@@ -8,6 +8,7 @@
 
 #import "NearByViewController.h"
 #import "BaiduMapViewController.h"
+#import "UIImageView+WebCache.h"
 
 @interface NearByViewController () <UITableViewDataSource, UITableViewDelegate, SINavigationMenuDelegate>
 {
@@ -58,12 +59,9 @@
     
     [para setValue:lat forKey:@"latitude"];
     [para setValue:lon forKey:@"longitude"];
-
-//    [para setValue:@"26.456654" forKey:@"latitude"];
-//    [para setValue:@"116.12516" forKey:@"longitude"];
     [para setValue:@"100" forKey:@"amount"];
     
-    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"101.200.179.69:8080" customHeaderFields:nil];
+    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:hostName customHeaderFields:nil];
     MKNetworkOperation *op = [engine operationWithPath:path params:para httpMethod:@"GET"];
     [op addCompletionHandler:^(MKNetworkOperation *operation){
         NSLog(@"respons string : %@", [operation responseString]);
@@ -120,9 +118,7 @@
     NSMutableDictionary *shop = [_shopList[row] valueForKey:@"shops"];
     NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [shop valueForKey:@"shop_logo"] ];
     NSURL *imageUrl = [NSURL URLWithString:stringURL];
-    NSData *imgData = [NSData dataWithContentsOfURL:imageUrl];
-    UIImage *tmpimage=[[UIImage alloc] initWithData:imgData];
-    cell.shop_logo.image = tmpimage;
+    [cell.shop_logo sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"icon"]];
     cell.shop_name.text = [shop valueForKey:@"shop_name"];
     cell.stars.text =  [NSString stringWithFormat:@"%@",[shop valueForKey:@"stars"]];
     NSString *string_others = [[NSString alloc] initWithFormat:@"共售出%@份/%@起送/%@送达", [shop valueForKey:@"sold_amount"], [shop valueForKey:@"deliver_charge"], [shop valueForKey:@"service_time"]];
@@ -131,23 +127,6 @@
 
     return cell;
 }
-
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-////    UINavigationController *nav = self.navController;
-//
-//    UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//    FoodViewController *fv = [story instantiateViewControllerWithIdentifier:@"FoodViewController"];
-//    NSDictionary *shopInfo = _shopList[indexPath.row];
-//    fv.shop_id = [[shopInfo valueForKey:@"shops"] valueForKey:@"shop_id"];
-//    fv.shop_name = [[shopInfo valueForKey:@"shops"] valueForKey:@"shop_name"];
-//    fv.shop_phone = [[shopInfo valueForKey:@"shops"] valueForKey:@"shop_phone"];
-//    fv.shop_logo = [[shopInfo valueForKey:@"shops"] valueForKey:@"shop_logo"];
-//    fv.deliver_charge = [[shopInfo valueForKey:@"shops"] valueForKey:@"deliver_charge"];
-//    NSString *title = [[shopInfo valueForKey:@"shops"] valueForKey:@"shop_name"];
-//    fv.navigationItem.title = title;
-//    [self.navigationController pushViewController:fv animated:YES];
-//}
 
 #pragma mark - Navigation
 
@@ -163,7 +142,7 @@
         fv.shop_name = [[shopInfo valueForKey:@"shops"] valueForKey:@"shop_name"];
         fv.shop_phone = [[shopInfo valueForKey:@"shops"] valueForKey:@"shop_phone"];
         NSString *shop_logo_url = [[shopInfo valueForKey:@"shops"] valueForKey:@"shop_logo"];
-        NSString *pic_name = [shop_logo_url substringFromIndex:41];
+        NSString *pic_name = [shop_logo_url substringFromIndex:40];
         fv.shop_logo = pic_name;
         fv.deliver_charge = [[shopInfo valueForKey:@"shops"] valueForKey:@"deliver_charge"];
         NSString *title = [[shopInfo valueForKey:@"shops"] valueForKey:@"shop_name"];

@@ -10,6 +10,8 @@
 #import "CustomViewController.h"
 #import "AppDelegate.h"
 //#import "NearByViewController.h"
+#import "GlobalDefine.h"
+
 
 @interface LoginViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UITextField *username_textField;

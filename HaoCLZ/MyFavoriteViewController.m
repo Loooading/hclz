@@ -9,6 +9,7 @@
 #import "MyFavoriteViewController.h"
 #import "NearByTableViewCell.h"
 #import "FoodViewController.h"
+#import "UIImageView+WebCache.h"
 
 @interface MyFavoriteViewController ()
 {
@@ -39,7 +40,7 @@
     [para setValue:type forKey:@"type"];
     [para setValue:myDelegate.uid forKey:@"uid"];
     
-        MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"101.200.179.69:8080" customHeaderFields:nil];
+    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:hostName customHeaderFields:nil];
     MKNetworkOperation *op = [engine operationWithPath:path params:para httpMethod:@"GET"];
     [op addCompletionHandler:^(MKNetworkOperation *operation){
         NSLog(@"respons string : %@", [operation responseString]);
@@ -75,17 +76,50 @@
     NSMutableDictionary *shop = _shopList[row];
     NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [shop valueForKey:@"shop_logo"] ];
     NSURL *imageUrl = [NSURL URLWithString:stringURL];
-    NSData *imgData = [NSData dataWithContentsOfURL:imageUrl];
-    UIImage *tmpimage=[[UIImage alloc] initWithData:imgData];
-    cell.shop_logo.image = tmpimage;
+    [cell.shop_logo sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"icon"]];
     cell.shop_name.text = [shop valueForKey:@"shop_name"];
     cell.stars.text =  [NSString stringWithFormat:@"%@",[shop valueForKey:@"stars"]];
     NSString *string_others = [[NSString alloc] initWithFormat:@"共售出%@份/%@起送/%@送达", [shop valueForKey:@"sold_amount"], [shop valueForKey:@"deliver_charge"], [shop valueForKey:@"service_time"]];
     cell.others.text = string_others;
     cell.introduce.text = [shop valueForKey:@"introduce"];
+    [cell.delCollectionButton setTag:indexPath.row];
+    [cell.delCollectionButton addTarget:self action:@selector(delCollection:) forControlEvents:UIControlEventTouchUpInside];
     
     return cell;
 }
+
+-(void)delCollection:(UIButton *)bt{
+    NSMutableDictionary *shop = _shopList[bt.tag];
+    NSString *collection_id = [shop valueForKey:@"collection_id"];
+    AppDelegate *myDelegate = [[UIApplication sharedApplication] delegate];
+    NSString *uid = myDelegate.uid;
+    NSString *path = [[NSString alloc] initWithFormat:@"/TakeOut/action/modify_collectionCancel"];
+    NSMutableDictionary *para = [[NSMutableDictionary alloc] init];
+    
+    [para setValue:collection_id forKey:@"collection_id"];
+    [para setValue:uid forKey:@"uid"];
+    
+    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:hostName customHeaderFields:nil];
+    MKNetworkOperation *op = [engine operationWithPath:path params:para httpMethod:@"POST"];
+    [op addCompletionHandler:^(MKNetworkOperation *operation){
+        NSLog(@"respons string : %@", [operation responseString]);
+        NSData *data = [operation responseData];
+        NSDictionary *resDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        if(![[resDic valueForKey:@"status"] intValue])
+        {
+            [CustomViewController showMessage:@"删除收藏成功!"];
+            [self requestDataWithType:@"1"];
+        }
+        else{
+            [CustomViewController showMessage:[resDic valueForKey:@"message"]];
+        }
+    }errorHandler:^(MKNetworkOperation *errorOp, NSError *err){
+        NSLog(@"请求错误 : %@", [err localizedDescription]);
+    }];
+    [engine enqueueOperation:op];
+    
+}
+
 
 #pragma mark - Navigation
 

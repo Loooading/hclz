@@ -12,6 +12,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *food_pic;
 @property (weak, nonatomic) IBOutlet UILabel *food_name;
 @property (weak, nonatomic) IBOutlet UIButton *buttonPrice;
+@property (weak, nonatomic) IBOutlet UIButton *minusButton;
 @property (weak, nonatomic) IBOutlet UILabel *number;
+@property (weak, nonatomic) IBOutlet UILabel *introduceLabel;
 
 @end

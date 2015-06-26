@@ -22,14 +22,18 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     AppDelegate *myDelegate = [[UIApplication sharedApplication] delegate];
-
+    //食品价格
     self.food_price_label.text = [[NSString alloc] initWithFormat:@"￥%@", self.food_price];
-    self.deliver_charge_label.text = [[NSString alloc] initWithFormat:@"￥%@", self.deliver_charge];
-    float totalPricetmp = [self.deliver_charge floatValue] + [self.food_price floatValue];
+    //配送费
+    self.deliver_charge_label.text = @"￥0";
+    //总价
+    float totalPricetmp = [self.food_price floatValue];
     _totalPrice = [NSString stringWithFormat:@"%.1f", totalPricetmp];
     self.total_price = [NSString stringWithFormat:@"￥%.1f", totalPricetmp];
     self.total_price_label.text = self.total_price;
+    //下单人
     self.nick_name_label.text = myDelegate.nickname;
+    //电话
     self.phone_label.text = myDelegate.phone;
     //初始化地理编码检索
     _searcher =[[BMKGeoCodeSearch alloc]init];
@@ -55,6 +59,7 @@
 
 }
 
+//信息修改完后,通过通知中心回传数据,接收到后执行,重新设置下单信息
 -(void)fixedCompletion:(NSNotification *)notification{
     NSDictionary *theDate = [notification userInfo];
     NSString *nickname = [theDate valueForKey:@"nickname"];
@@ -78,6 +83,7 @@
     if (error == BMK_SEARCH_NO_ERROR) {
         //在此处理正常结果
         NSLog(@"%@", result.address);
+        //显示反向地理编码检索信息
         self.service_address_label.text = result.address;
     }
     else {
@@ -99,30 +105,44 @@
     // Pass the selected object to the new view controller.
 }
 */
-
+//提交订单
 - (IBAction)commitOrder:(id)sender {
     AppDelegate *myDelegate = [[UIApplication sharedApplication] delegate];
     NSString *path;
+    NSMutableDictionary *para = [[NSMutableDictionary alloc] init];
+    [para setValue:myDelegate.uid forKey:@"uid"];
+    [para setValue:self.shop_id forKey:@"shop_id"];
+    [para setValue:self.shop_logo forKey:@"shop_logo"];
+    [para setValue:_totalPrice forKey:@"total_price"];
+
+    NSString *deliver_way = [[NSString alloc]initWithFormat:@"%li",(long)[self.segmentedControl selectedSegmentIndex]];
+    [para setValue:deliver_way forKey:@"deliver_way"];
+    [para setValue:self.shop_phone forKey:@"shop_phone"];
+    
+    //提交订单时须对中文进行latin编码转换
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISOLatin1);
+    //如果是商城订单,则不需要传shop_name参数,否则编码latin后传参
     if (!self.foodRequestType) {
         path = [[NSString alloc] initWithFormat:@"/TakeOut/action/modify_corderAdd"];
     }
     else{
         path = [[NSString alloc] initWithFormat:@"/TakeOut/action/modify_orderAdd"];
+        //shop_name   latin编码
+        NSString *shop_nameString = [NSString stringWithCString:[self.shop_name UTF8String] encoding:enc];
+        NSLog(@"%@", shop_nameString);
+        [para setValue:shop_nameString forKey:@"shop_name"];
     }
-    NSMutableDictionary *para = [[NSMutableDictionary alloc] init];
-    [para setValue:myDelegate.uid forKey:@"uid"];
+    //foodAmount   latin编码
+    NSString *foodAmountString = [NSString stringWithCString:[self.foodAmount UTF8String] encoding:enc];
+    NSLog(@"%@", foodAmountString);
+    //配送地址   latin编码
+    NSString *serivce_addressString = [NSString stringWithCString:[self.service_address_label.text UTF8String] encoding:enc];
+    NSLog(@"%@", serivce_addressString);
+    //设置foodAmount 和 配送地址参数
+    [para setValue:foodAmountString forKey:@"foodAmount"];
+    [para setValue:serivce_addressString forKey:@"service_address"];
 
-    [para setValue:self.shop_id forKey:@"shop_id"];
-    [para setValue:self.foodAmount forKey:@"foodAmount"];
-    [para setValue:self.shop_logo forKey:@"shop_logo"];
-    [para setValue:_totalPrice forKey:@"total_price"];
-    [para setValue:self.service_address_label.text forKey:@"service_address"];
-    NSString *deliver_way = [[NSString alloc]initWithFormat:@"%li",(long)[self.segmentedControl selectedSegmentIndex]];
-    [para setValue:deliver_way forKey:@"deliver_way"];
-    [para setValue:self.shop_phone forKey:@"shop_phone"];
-    [para setValue:self.shop_name forKey:@"shop_name"];
-    
-    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"101.200.179.69:8080" customHeaderFields:nil];
+    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:hostName customHeaderFields:nil];
     MKNetworkOperation *op = [engine operationWithPath:path params:para httpMethod:@"GET"];
     [op addCompletionHandler:^(MKNetworkOperation *operation){
         NSLog(@"respons string : %@", [operation responseString]);
@@ -140,7 +160,10 @@
         NSLog(@"请求错误 : %@", [err localizedDescription]);
     }];
     [engine enqueueOperation:op];
-    
+}
 
+- (const char *)UnicodeToISO88591:(NSString *)src{
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISOLatin1);
+    return [src cStringUsingEncoding:enc];
 }
 @end

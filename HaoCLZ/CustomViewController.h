@@ -14,6 +14,8 @@
 //#import "NearByViewController.h"
 #import "UserManageViewController.h"
 //#import "OrderLIstViewController.h"
+#import "GlobalDefine.h"
+
 
 @interface CustomViewController : UIViewController
 

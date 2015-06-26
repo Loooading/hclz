@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import "CustomViewController.h"
+#import "GlobalDefine.h"
+
 
 @interface UserManageViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UILabel *nickname_label;

@@ -8,6 +8,7 @@
 
 #import "OrderDetailViewController.h"
 #import "OrderLIstViewController.h"
+#import "UIImageView+WebCache.h"
 
 @interface OrderDetailViewController ()
 
@@ -19,12 +20,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self.navigationController setNavigationBarHidden:NO];
-
-    NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [_orderDetailInfo valueForKey:@"shop_logo"]];
-    NSURL *imageUrl = [NSURL URLWithString:stringURL];
-    NSData *imgData = [NSData dataWithContentsOfURL:imageUrl];
-    UIImage *tmpimage=[[UIImage alloc] initWithData:imgData];
-    self.shop_image.image = tmpimage;
+    if (self.orderRequestType) {
+        NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [_orderDetailInfo valueForKey:@"shop_logo"]];
+        NSURL *imageUrl = [NSURL URLWithString:stringURL];
+        [self.shop_image sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"icon"]];
+    }
     self.date_label.text = [_orderDetailInfo valueForKey:@"date"];
     self.date1_label.text = [_orderDetailInfo valueForKey:@"date"];
 
@@ -106,8 +106,6 @@
             [self changeOrder:[alertView tag]];
         }
 }
-
-
 
 //删除或确认订单,1为删除,0为确认
 -(void) changeOrder:(NSUInteger) type

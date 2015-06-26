@@ -10,6 +10,8 @@
 #import <BaiduMapAPI/BMapKit.h>
 #import "AppDelegate.h"
 #import "CustomViewController.h"
+#import "GlobalDefine.h"
+
 
 @interface BalanceViewController : UIViewController
 @property (strong, nonatomic) NSString *shop_id;

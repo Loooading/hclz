@@ -9,7 +9,9 @@
 #import "RegisterViewController.h"
 
 @interface RegisterViewController () <UITextFieldDelegate>
-
+{
+    BOOL isChecked;
+}
 @end
 
 @implementation RegisterViewController
@@ -20,9 +22,25 @@
     UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"取消注册" style:UIBarButtonItemStyleBordered target:self action:@selector(dismissView)];
     //    leftButton.tintColor=[UIColor colorWithRed:129/255.0 green:129/255.0  blue:129/255.0 alpha:1.0];
     self.navigationItem.leftBarButtonItem = leftButton;
-
+    [self.checkButton setImage:[UIImage imageNamed:@"check_unsel"] forState:UIControlStateNormal];
+    [self.checkButton setImage:[UIImage imageNamed:@"check_sel"] forState:UIControlStateSelected];
+    [self.checkButton addTarget:self action:@selector(checkboxClick:)forControlEvents:UIControlEventTouchUpInside];
+    [self.checkButton setSelected:YES];//设置按钮得状态是否为选中（可在此根据具体情况来设置按钮得初始状态）
     [self generateCode];
 }
+
+-(void)checkboxClick:(UIButton *)btn{
+    
+    btn.selected=!btn.selected;//每次点击都改变按钮的状态
+    
+    if(btn.selected){
+        isChecked = YES;
+    }
+    else{
+        isChecked = NO;
+    }
+}
+
 
 -(void) dismissView{
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -149,10 +167,15 @@
         return;
     }
     
-    NSString *firstInputPasswordString = self.password_textField.text;
-    NSString *secondInputPasswordString = self.checkPassword_textField.text;
+    NSString *firstInputPasswordString = [self.password_textField.text lowercaseString];
+    NSString *secondInputPasswordString = [self.checkPassword_textField.text lowercaseString];
     if (![firstInputPasswordString isEqualToString:secondInputPasswordString]) {
         [CustomViewController showMessage:@"两次输入密码不同,请确认后重新输入!"];
+        return;
+    }
+    
+    if (!isChecked) {
+        [CustomViewController showMessage:@"同意协议才能注册哦"];
         return;
     }
     

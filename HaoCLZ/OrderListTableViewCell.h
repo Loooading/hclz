@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GlobalDefine.h"
+
 
 @interface OrderListTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *shop_logo_imgaeVIew;

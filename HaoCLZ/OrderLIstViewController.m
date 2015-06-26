@@ -10,6 +10,8 @@
 #import "OrderListTableViewCell.h"
 #import "SINavigationMenuView.h"
 #import "OrderDetailViewController.h"
+#import "UIImageView+WebCache.h"
+
 
 @interface OrderLIstViewController () <SINavigationMenuDelegate>
 {
@@ -26,12 +28,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-//    AppDelegate *myDelegate = [[UIApplication sharedApplication] delegate];
-//    if (!myDelegate.uid) {
-//        UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//        LoginViewController *lvc = [story instantiateViewControllerWithIdentifier:@"LoginViewController"];
-//        [self.navigationController pushViewController:lvc animated:YES];
-//    }
     _items = @[@"未接单", @"已接单", @"已完成",@"已取消"];
     _orderList = [[NSMutableArray alloc] init];
     [self addMenuButton];
@@ -65,11 +61,13 @@
 - (void)requestDataWithType:(NSUInteger) type isDSrder:(NSUInteger) orderReqType{
     NSString *path;
     if (orderReqType) {
+        //普通订单
         path = [[NSString alloc] initWithFormat:@"/TakeOut/action/msg_myOrderHistory"];
 
     }
     else
     {
+        //商城订单
         path = [[NSString alloc] initWithFormat:@"/TakeOut/action/msg_myCOrder"];
 
     }
@@ -77,8 +75,7 @@
     AppDelegate *myDelegate = [[UIApplication sharedApplication] delegate];
     NSLog(@"%@",myDelegate.uid);
     [para setValue:myDelegate.uid forKey:@"uid"];
-//    [para setValue:@"25" forKey:@"uid"];
-    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"101.200.179.69:8080" customHeaderFields:nil];
+    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:hostName customHeaderFields:nil];
     MKNetworkOperation *op = [engine operationWithPath:path params:para httpMethod:@"GET"];
     [op addCompletionHandler:^(MKNetworkOperation *operation){
         NSLog(@"respons string : %@", [operation responseString]);
@@ -86,17 +83,21 @@
         NSDictionary *resDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
         if (orderReqType)
         {
+            //普通订单
             _resOrderList = [resDic valueForKey:@"orderHistories"];
         }
         else{
+            //商城订单
             _resOrderList = [resDic valueForKey:@"corder"];
         }
         [_orderList removeAllObjects];
-        //如果订单状态与请求的订单类型相同,则放入_orderList,通过tableview显示出来
+        //数据处理
+        //遍历返回的订单数组,如果订单状态与请求的订单类型相同,则放入_orderList,通过tableview显示出来
         for (int i = 0; i <_resOrderList.count; i++) {
             NSMutableDictionary *dicTmp =  [_resOrderList objectAtIndex:i];
             NSUInteger orderState = [[dicTmp valueForKey:@"state"] intValue];
             NSUInteger visible = [[dicTmp valueForKey:@"visible"] intValue];
+            //如果订单的类型与导航栏菜单的index相同,且订单可见,则加入订单显示表
             if (orderState == type && !visible) {
                 [_orderList addObject:dicTmp];
             }
@@ -128,14 +129,14 @@
     cell.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     NSUInteger row = [indexPath row];
     NSMutableDictionary *orderInfo = _orderList[row];
+    //如果是商城订单,则需要解析返回来的jsonArray,否则直接显示订单信息即可
     if (!self.orderRequestType)
     {
-        
+        //解析jsonArray
         NSData *data = [[orderInfo valueForKey:@"foodAmount"] dataUsingEncoding:NSUTF8StringEncoding];
         NSArray *foodAmountArray =[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
         NSString *foodAmountString = @"";
         for (NSMutableDictionary *foodAmountDic in foodAmountArray) {
-            
             NSString *foodNumberTmp = [[NSString alloc] initWithFormat:@"%@份", [foodAmountDic  valueForKey:@"food_num"]];
             foodAmountString = [foodAmountString stringByAppendingString:foodNumberTmp];
             foodAmountString = [foodAmountString stringByAppendingString:[foodAmountDic valueForKey:@"food_name"]];
@@ -143,19 +144,17 @@
         }
 
         cell.foodAmount_label.text = foodAmountString;
+        //订单店铺名称显示"电子商城"
         cell.shop_name_logo.text = @"电子商城";
     }
     else{
         cell.foodAmount_label.text = [orderInfo valueForKey:@"foodAmount"];
         cell.shop_name_logo.text = [orderInfo valueForKey:@"shop_name"];
+        NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [orderInfo valueForKey:@"shop_logo"]];
+        NSURL *imageUrl = [NSURL URLWithString:stringURL];
+        [cell.shop_logo_imgaeVIew sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"icon"]];
 
     }
-    
-    NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [orderInfo valueForKey:@"shop_logo"]];
-    NSURL *imageUrl = [NSURL URLWithString:stringURL];
-    NSData *imgData = [NSData dataWithContentsOfURL:imageUrl];
-    UIImage *tmpimage=[[UIImage alloc] initWithData:imgData];
-    cell.shop_logo_imgaeVIew.image = tmpimage;
     cell.date_label.text = [orderInfo valueForKey:@"date"];
     NSUInteger orderState = [[orderInfo valueForKey:@"state"] intValue];
     NSString *stateInString;

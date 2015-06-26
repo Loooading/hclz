@@ -12,9 +12,12 @@
 @property (weak, nonatomic) IBOutlet UIImageView *foodImageView;
 @property (weak, nonatomic) IBOutlet UILabel *foodName_label;
 @property (weak, nonatomic) IBOutlet UILabel *foodPrice_label;
+@property (weak, nonatomic) IBOutlet UILabel *introduceLabel;
 
 @property (strong, nonatomic) NSString *food_name;
 @property (strong, nonatomic) UIImage *food_image;
 @property (strong, nonatomic) NSString *food_price;
 @property (strong, nonatomic) NSString *title;
+@property (strong, nonatomic) NSString *intrduce;
+
 @end

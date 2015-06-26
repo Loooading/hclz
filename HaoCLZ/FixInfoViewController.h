@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface FixInfoViewController : UIViewController
+- (IBAction)cancel:(id)sender;
 - (IBAction)done:(id)sender;
 @property (weak, nonatomic) IBOutlet UITextField *nickname;
 @property (weak, nonatomic) IBOutlet UITextField *phone;

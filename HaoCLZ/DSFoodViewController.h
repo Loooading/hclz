@@ -7,6 +7,8 @@
 //
 
 #import "CustomViewController.h"
+#import "GlobalDefine.h"
+
 
 @interface DSFoodViewController : CustomViewController
 @property (weak, nonatomic) IBOutlet UITableView *foodListTableView;

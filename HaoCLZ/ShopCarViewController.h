@@ -10,14 +10,17 @@
 #import "ShopCarTableViewCell.h"
 #import "BalanceViewController.h"
 #import "AppDelegate.h"
+#import "GlobalDefine.h"
+
 
 @interface ShopCarViewController : UIViewController
+- (IBAction)goToBalance:(id)sender;
 @property (nonatomic) float totalPrice;
 @property (nonatomic) NSUInteger foodNumber;
 @property (weak, nonatomic) IBOutlet UITableView *shopCarInfoTableView;
 @property (weak, nonatomic) IBOutlet UILabel *foodNumberLabel;
 @property (weak, nonatomic) IBOutlet UILabel *totalPriceLaber;
-@property (strong, nonatomic) NSMutableArray *shopCarInfo;
+@property (copy, nonatomic) NSMutableArray *shopCarInfo;
 @property (strong, nonatomic) NSString *shop_id;
 @property (strong, nonatomic) NSString *shop_logo;
 @property (strong, nonatomic) NSString *shop_phone;

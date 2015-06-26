@@ -15,5 +15,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *stars;
 @property (weak, nonatomic) IBOutlet UILabel *others;
 @property (weak, nonatomic) IBOutlet UILabel *introduce;
+@property (weak, nonatomic) IBOutlet UIButton *delCollectionButton;
 
 @end

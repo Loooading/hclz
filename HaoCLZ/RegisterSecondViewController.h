@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "CustomViewController.h"
 #import "NearByViewController.h"
+#import "GlobalDefine.h"
+
 
 @interface RegisterSecondViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UITextField *nickname_textfield;

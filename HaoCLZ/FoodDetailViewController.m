@@ -17,11 +17,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+//    self.introduceLabel.numberOfLines = 0;
+//    [self.introduceLabel sizeToFit];
     [self.navigationController setNavigationBarHidden:NO];
     self.foodImageView.image = self.food_image;
     self.foodName_label.text = self.food_name;
     self.foodPrice_label.text = self.food_price;
+    self.introduceLabel.text = self.intrduce;
     self.navigationController.title = self.title;
+//    self.introduceLabel.numberOfLines = 0;
+//    [self.introduceLabel sizeToFit];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -85,6 +85,10 @@
 }
 
 
+- (IBAction)cancel:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (IBAction)done:(id)sender {
     if(![self validateMobile:self.phone.text])
     {

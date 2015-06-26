@@ -11,6 +11,7 @@
 #import "OrderLIstViewController.h"
 #import "DSFoodViewController.h"
 #import "MyFavoriteViewController.h"
+#import "AboutUsViewController.h"
 
 @interface CustomViewController ()
 {
@@ -105,8 +106,12 @@
             }
                 break;
             case 5:
-                NSLog(@"OrderLIstViewController");
-                viewControllerId = @"OrderLIstViewController";                break;
+            {
+                UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                AboutUsViewController *lvc = [story instantiateViewControllerWithIdentifier:@"AboutUsViewController"];
+                [self.navigationController pushViewController:lvc animated:YES];
+            }
+                break;
             default:
                 break;
         }
@@ -147,8 +152,14 @@
 
 -(void) addMenuButton{
     //创建一个左边按钮
-    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"菜单" style:UIBarButtonItemStyleBordered target:self action:@selector(showSideSlipView)];
-    self.navigationItem.leftBarButtonItem = leftButton;
+    UIImage *imgNormal = [UIImage imageNamed:@"leftnavbuttonimg"];
+    UIButton *butt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    [butt setImage:imgNormal forState:UIControlStateNormal];
+    [butt addTarget:self action:@selector(showSideSlipView) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithCustomView:butt];
+
+//    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithTitle:@"菜单" style:UIBarButtonItemStyleBordered target:self action:@selector(showSideSlipView)];
+    self.navigationItem.leftBarButtonItem = rightButton;
 }
 
 -(void)addBackButton{
