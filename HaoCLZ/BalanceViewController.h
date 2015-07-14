@@ -22,6 +22,7 @@
 @property (strong, nonatomic) NSString *foodAmount;
 @property (strong, nonatomic) NSString *total_price;
 @property (strong, nonatomic) NSString *deliver_charge;
+@property (strong, nonatomic) NSString *pay_state;
 
 
 @property (weak, nonatomic) IBOutlet UILabel *total_price_label;

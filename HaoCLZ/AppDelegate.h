@@ -18,6 +18,8 @@
 @property (nonatomic, strong) NSString *nickname;
 @property (nonatomic, strong) NSString *phone;
 @property (nonatomic, strong) NSString *address;
+@property (nonatomic, strong) BMKUserLocation *userLoc;
+
 @property (nonatomic) double latitude;
 @property (nonatomic) double longitude;
 

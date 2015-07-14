@@ -70,10 +70,7 @@
             [userDefaults synchronize];
 
             [self performSegueWithIdentifier:@"goToNearBy" sender:nil];
-//            UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//            NearByViewController *nyvc = [story instantiateViewControllerWithIdentifier:@"NearByViewController"];
-//            [self.navigationController pushViewController:nyvc animated:YES];
-            
+
         }
         else{
             [CustomViewController showMessage:[resDic valueForKey:@"message"]];

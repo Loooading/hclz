@@ -23,10 +23,11 @@
     if (self.orderRequestType) {
         NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [_orderDetailInfo valueForKey:@"shop_logo"]];
         NSURL *imageUrl = [NSURL URLWithString:stringURL];
-        [self.shop_image sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"icon"]];
+//        [self.shop_image sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"placeholder_img"]];
+        [self.shop_image sd_setImageWithURL:imageUrl];
     }
-    self.date_label.text = [_orderDetailInfo valueForKey:@"date"];
-    self.date1_label.text = [_orderDetailInfo valueForKey:@"date"];
+    self.date_label.text = [self transTimeString:[_orderDetailInfo valueForKey:@"date"]];
+    self.date1_label.text = [self transTimeString:[_orderDetailInfo valueForKey:@"date"]];
 
     self.shop_name_label.text = [_orderDetailInfo valueForKey:@"shop_name"];
     if (!self.orderRequestType)
@@ -64,11 +65,11 @@
     switch (orderState) {
         case 0:
             stateInString = @"未接单";
-            self.delete_button.hidden = NO;
+//            self.delete_button.hidden = NO;
             break;
         case 1:
             stateInString = @"已接单";
-            self.confirm_button.hidden = NO;
+//            self.confirm_button.hidden = NO;
             break;
         case 2:
             stateInString = @"交易完成";
@@ -83,6 +84,69 @@
     self.orderState_label.text = stateInString;
 
 }
+
+
+//格式化日期
+-(NSString *)transTimeString:(NSString *)timeString{
+    
+    NSArray *dateArray = [timeString componentsSeparatedByString:@" "];
+    NSString *monthTmp = dateArray[0];
+    NSString *month = @"";
+    if ([monthTmp isEqualToString:@"Jan"]) {
+        month = @"1";
+    }
+    if ([monthTmp isEqualToString:@"Feb"]) {
+        month = @"2";
+    }
+    if ([monthTmp isEqualToString:@"Mar"]) {
+        month = @"3";
+    }
+    if ([monthTmp isEqualToString:@"Apr"]) {
+        month = @"4";
+    }
+    if ([monthTmp isEqualToString:@"May"]) {
+        month = @"5";
+    }
+    if ([monthTmp isEqualToString:@"Jun"]) {
+        month = @"6";
+    }
+    if ([monthTmp isEqualToString:@"Jul"]) {
+        month = @"7";
+    }
+    if ([monthTmp isEqualToString:@"Aug"]) {
+        month = @"8";
+    }
+    if ([monthTmp isEqualToString:@"Sep"]) {
+        month = @"9";
+    }
+    if ([monthTmp isEqualToString:@"Oct"]) {
+        month = @"10";
+    }
+    if ([monthTmp isEqualToString:@"Nov"]) {
+        month = @"11";
+    }
+    if ([monthTmp isEqualToString:@"Dec"]) {
+        month = @"12";
+    }
+    
+    NSString *dayTmp = dateArray[1];
+    NSString *day = [dayTmp substringToIndex:1];
+    NSString *year = dateArray[2];
+    NSString *time = dateArray[3];
+    NSArray *timeArray = [time componentsSeparatedByString:@":"];
+    NSString *hour = timeArray[0];
+    NSUInteger intHour = [hour intValue];
+    NSString *minute = timeArray[1];
+    NSString *second = timeArray[2];
+    NSString *tt = dateArray[4];
+    if ([tt isEqualToString:@"PM"]) {
+        intHour += 12;
+    }
+    
+    NSString *retTime = [[NSString alloc]initWithFormat:@"%@年%@月%@日 %lu时%@分%@秒", year,month,day,(unsigned long)intHour,minute,second];
+    return retTime;
+}
+
 
 - (IBAction)comfirm:(id)sender {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您确定要确认此订单吗?确认订单后交易完成!" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];

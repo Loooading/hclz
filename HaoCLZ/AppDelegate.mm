@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import <AlipaySDK/AlipaySDK.h>
 
 
 @interface AppDelegate () <BMKGeoCodeSearchDelegate, BMKLocationServiceDelegate>
@@ -21,6 +22,7 @@
     BMKMapManager* _mapManager;
     BMKGeoCodeSearch *_searcher;
     BMKLocationService *_locService;
+    NSString *trackViewURL;
 //    double _latitude;
 //    double _longitude;
 }
@@ -28,7 +30,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //通过本地UserDefault判断是否登录
-    
+    [self onCheckVersion];
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSLog(@"%@",[userDefaults objectForKey:@"nickname"]);
     if(![[[userDefaults objectForKey:@"uid"] stringValue] isEqualToString:@""])
@@ -108,6 +110,8 @@
     NSLog(@"didUpdateUserLocation lat %f,long %f",userLocation.location.coordinate.latitude,userLocation.location.coordinate.longitude);
     self.latitude = userLocation.location.coordinate.latitude;
     self.longitude = userLocation.location.coordinate.longitude;
+    self.userLoc = userLocation;
+    [_locService stopUserLocationService];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -133,6 +137,99 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+-(void)onCheckVersion
+{
+    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
+    //CFShow((__bridge CFTypeRef)(infoDic));
+    NSString *currentVersion = [infoDic objectForKey:@"CFBundleVersion"];
+    
+    NSString *URL = @"http://itunes.apple.com/cn/lookup?id=1013689152";
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:URL]];
+    [request setHTTPMethod:@"POST"];
+    NSHTTPURLResponse *urlResponse = nil;
+    NSError *error = nil;
+    NSData *recervedData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    
+    NSString *results = [[NSString alloc] initWithBytes:[recervedData bytes] length:[recervedData length] encoding:NSUTF8StringEncoding];
+    NSDictionary *dic = [self dictionaryWithJsonString:results];
+    NSArray *infoArray = [dic objectForKey:@"results"];
+    if ([infoArray count]) {
+        NSDictionary *releaseInfo = [infoArray objectAtIndex:0];
+        NSString *lastVersion = [releaseInfo objectForKey:@"version"];
+        
+        if (![lastVersion isEqualToString:currentVersion]) {
+            trackViewURL = [releaseInfo objectForKey:@"trackViewUrl"];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"更新" message:@"有新的版本更新，请前往更新" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            alert.tag = 10000;
+            [alert show];
+        }
+//        else
+//        {
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"更新" message:@"此版本为最新版本" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            alert.tag = 10001;
+//            [alert show];
+//        }
+    }
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag==10000) {
+        if (buttonIndex==0) {
+            NSURL *url = [NSURL URLWithString:trackViewURL];
+            [[UIApplication sharedApplication]openURL:url];
+        }
+    }
+}
+
+/*!
+ * @brief 把格式化的JSON格式的字符串转换成字典
+ * @param jsonString JSON格式的字符串
+ * @return 返回字典
+ */
+- (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString {
+    if (jsonString == nil) {
+        return nil;
+    }
+    
+    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *err;
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                        options:NSJSONReadingMutableContainers
+                                                          error:&err];
+    if(err) {
+        NSLog(@"json解析失败：%@",err);
+        return nil;
+    }
+    return dic;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    
+//    //跳转支付宝钱包进行支付，处理支付结果
+//    [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
+//        NSLog(@"result = %@",resultDic);
+//    }];
+//    
+//    if ([url.host isEqualToString:@"platformapi"]){//支付宝钱包快登授权返回 authCode
+//        [[AlipaySDK defaultService] processAuthResult:url standbyCallback:^(NSDictionary *resultDic) {
+//            NSLog(@"result = %@",resultDic);
+//        }];
+//    }
+//    return YES;
+    //如果极简开发包不可用,会跳转支付宝钱包进行支付,需要将支付宝钱包的支付结果回传给开 发包
+    if ([url.host isEqualToString:@"safepay"]) {
+        [[AlipaySDK defaultService] processOrderWithPaymentResult:url
+                                                  standbyCallback:^(NSDictionary *resultDic) {
+                                                      NSLog(@"result = %@",resultDic);
+                                                  }]; }
+    if ([url.host isEqualToString:@"platformapi"]){//支付宝钱包快登授权返回 authCode
+        [[AlipaySDK defaultService] processAuthResult:url standbyCallback:^(NSDictionary *resultDic) {
+            NSLog(@"result = %@",resultDic);
+        }];
+    }
+    return YES;
 }
 
 @end

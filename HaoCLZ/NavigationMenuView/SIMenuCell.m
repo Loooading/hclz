@@ -29,8 +29,9 @@
         self.textLabel.shadowOffset = CGSizeMake(0.0, -1.0);
         
         self.selectionStyle = UITableViewCellEditingStyleNone;
-        
         self.cellSelection = [[SICellSelection alloc] initWithFrame:self.bounds andColor:[SIMenuConfiguration selectionColor]];
+        //add by liuhj 适配不同屏幕,防止点击后显示的view不覆盖宽度
+        self.cellSelection.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         [self.cellSelection.layer setCornerRadius:6.0];
         [self.cellSelection.layer setMasksToBounds:YES];
         

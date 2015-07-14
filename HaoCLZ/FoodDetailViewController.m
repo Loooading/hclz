@@ -25,8 +25,8 @@
     self.foodPrice_label.text = self.food_price;
     self.introduceLabel.text = self.intrduce;
     self.navigationController.title = self.title;
-//    self.introduceLabel.numberOfLines = 0;
-//    [self.introduceLabel sizeToFit];
+    self.introduceLabel.numberOfLines = 0;
+    [self.introduceLabel sizeToFit];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -8,6 +8,7 @@
 
 #import "FoodViewController.h"
 #import "UIImageView+WebCache.h"
+#import "MBProgressHUD.h"
 
 
 @interface FoodViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -17,7 +18,7 @@
     int foodNumber;
     NSString *foodAmount;
     NSMutableArray *_shopCarInfoArray;
-    
+    MBProgressHUD *HUD;
 }
 
 @end
@@ -30,7 +31,25 @@
     [self.navigationController setNavigationBarHidden:NO];
     _shopCarInfoArray = [[NSMutableArray alloc] init];
     [self addNavRightButton];
-    [self requestData];
+    HUD = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.view addSubview:HUD];
+    
+    //如果设置此属性则当前的view置于后台
+    HUD.dimBackground = YES;
+    
+    //设置对话框文字
+    HUD.labelText = @"努力加载中..";
+    
+    //显示对话框
+    [HUD showAnimated:YES whileExecutingBlock:^{
+        //对话框显示时需要执行的操作
+        //        sleep(3);
+        [self requestData];
+    } completionBlock:^{
+        //操作执行完后取消对话框
+        [HUD removeFromSuperview];
+        HUD = nil;
+    }];
 }
 -(void)addNavRightButton{
     UIImage *imgNormal = [UIImage imageNamed:@"add_fav"];
@@ -68,7 +87,7 @@
             NSDictionary *resDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
             if(![[resDic valueForKey:@"status"] intValue])
             {
-                [CustomViewController showMessage:@"收藏成功!"];
+                [CustomViewController showMessage:@"店铺收藏成功!"];
             }
             else{
                 [CustomViewController showMessage:[resDic valueForKey:@"message"]];
@@ -128,33 +147,27 @@
     static NSString *cellIdentifer;
     FoodTableViewCell * cell ;
     cellIdentifer = @"FoodTableViewCell";
-//    cellIdentifer =  [NSString stringWithFormat:@"Cell%d%d", [indexPath section], [indexPath row]];
     cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifer];
     if(cell == nil)
     {
         cell = [[FoodTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifer];
     }
-//    else//当页面拉动的时候 当cell存在并且最后一个存在 把它进行删除就出来一个独特的cell我们在进行数据配置即可避免
-//    {
-//        while ([cell.contentView.subviews lastObject] != nil) {
-//            [(UIView *)[cell.contentView.subviews lastObject] removeFromSuperview];
-//        }
-//    }
+
     cell.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     NSUInteger row = [indexPath row];
     NSMutableDictionary *food = _foodList[row];
     //设置食物图片,从url中下载
     NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [food valueForKey:@"food_pic"] ];
     NSURL *imageUrl = [NSURL URLWithString:stringURL];
-    [cell.food_pic sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"icon"]];
-
+//    [cell.food_pic sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"placeholder_img"]];
+    [cell.food_pic sd_setImageWithURL:imageUrl];
     //设置食品名称
     cell.food_name.text = [food valueForKey:@"food_name"];
     cell.introduceLabel.text = [food valueForKey:@"food_introduce"];
     //设置食品数量,从_shopCarInfoArray取得
     cell.number.text = [_shopCarInfoArray[row] valueForKey:@"food_number"];
     //设置食品单价按钮标题为价格,圆角,tag为indexPath.row,点击执行加入购物车方法
-    NSString *price = [[NSString alloc] initWithFormat:@"￥%@", [food valueForKey:@"price"]];
+    NSString *price = [[NSString alloc] initWithFormat:@"￥%.1f", [[food valueForKey:@"price"] doubleValue]];
     [cell.buttonPrice setTitle:price forState:UIControlStateNormal];
     cell.buttonPrice.layer.cornerRadius = 5.0;
     [cell.buttonPrice setTag:indexPath.row];
@@ -238,13 +251,6 @@
     }
     
     if(myDelegate.uid){
-//        for (int i = 0; i < _shopCarInfoArray.count; i++) {
-//            NSMutableDictionary *shopCarDic = _shopCarInfoArray[i];
-//            NSString *food_number_cond = [shopCarDic valueForKey:@"food_number"];
-//            if ([food_number_cond isEqualToString:@"0"]) {
-//                [_shopCarInfoArray removeObject:shopCarDic];
-//            }
-//        }
         [self performSegueWithIdentifier:@"showShopCar" sender:nil];
     }
     else{

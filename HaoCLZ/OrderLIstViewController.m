@@ -11,6 +11,7 @@
 #import "SINavigationMenuView.h"
 #import "OrderDetailViewController.h"
 #import "UIImageView+WebCache.h"
+#import "MBProgressHUD.h"
 
 
 @interface OrderLIstViewController () <SINavigationMenuDelegate>
@@ -19,6 +20,7 @@
     NSMutableArray *_orderList;
     SINavigationMenuView *_Navmenu;
     NSArray *_items;
+    MBProgressHUD *HUD;
 
 }
 @end
@@ -28,11 +30,31 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    _items = @[@"未接单", @"已接单", @"已完成",@"已取消"];
+    _items = @[@"未接单", @"已接单"];
     _orderList = [[NSMutableArray alloc] init];
     [self addMenuButton];
     [self addNavigationMenuView];
-    [self requestDataWithType:0 isDSrder:self.orderRequestType];
+//    [self requestDataWithType:0 isDSrder:self.orderRequestType];
+    HUD = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.view addSubview:HUD];
+    
+    //如果设置此属性则当前的view置于后台
+    HUD.dimBackground = YES;
+    
+    //设置对话框文字
+    HUD.labelText = @"努力加载中..";
+    
+    //显示对话框
+    [HUD showAnimated:YES whileExecutingBlock:^{
+        //对话框显示时需要执行的操作
+        //        sleep(3);
+        [self requestDataWithType:0 isDSrder:self.orderRequestType];
+    } completionBlock:^{
+        //操作执行完后取消对话框
+        [HUD removeFromSuperview];
+        HUD = nil;
+    }];
+
 }
 
 #pragma mark - Add NavigationMenuView
@@ -152,10 +174,12 @@
         cell.shop_name_logo.text = [orderInfo valueForKey:@"shop_name"];
         NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [orderInfo valueForKey:@"shop_logo"]];
         NSURL *imageUrl = [NSURL URLWithString:stringURL];
-        [cell.shop_logo_imgaeVIew sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"icon"]];
+//        [cell.shop_logo_imgaeVIew sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"placeholder_img"]];
+        [cell.shop_logo_imgaeVIew sd_setImageWithURL:imageUrl];
+
 
     }
-    cell.date_label.text = [orderInfo valueForKey:@"date"];
+    cell.date_label.text = [self transTimeString:[orderInfo valueForKey:@"date"]];
     NSUInteger orderState = [[orderInfo valueForKey:@"state"] intValue];
     NSString *stateInString;
     switch (orderState) {
@@ -177,6 +201,67 @@
     }
     cell.state_label.text = stateInString;
     return cell;
+}
+
+//格式化日期
+-(NSString *)transTimeString:(NSString *)timeString{
+    
+    NSArray *dateArray = [timeString componentsSeparatedByString:@" "];
+    NSString *monthTmp = dateArray[0];
+    NSString *month = @"";
+    if ([monthTmp isEqualToString:@"Jan"]) {
+        month = @"1";
+    }
+    if ([monthTmp isEqualToString:@"Feb"]) {
+        month = @"2";
+    }
+    if ([monthTmp isEqualToString:@"Mar"]) {
+        month = @"3";
+    }
+    if ([monthTmp isEqualToString:@"Apr"]) {
+        month = @"4";
+    }
+    if ([monthTmp isEqualToString:@"May"]) {
+        month = @"5";
+    }
+    if ([monthTmp isEqualToString:@"Jun"]) {
+        month = @"6";
+    }
+    if ([monthTmp isEqualToString:@"Jul"]) {
+        month = @"7";
+    }
+    if ([monthTmp isEqualToString:@"Aug"]) {
+        month = @"8";
+    }
+    if ([monthTmp isEqualToString:@"Sep"]) {
+        month = @"9";
+    }
+    if ([monthTmp isEqualToString:@"Oct"]) {
+        month = @"10";
+    }
+    if ([monthTmp isEqualToString:@"Nov"]) {
+        month = @"11";
+    }
+    if ([monthTmp isEqualToString:@"Dec"]) {
+        month = @"12";
+    }
+    
+    NSString *dayTmp = dateArray[1];
+    NSString *day = [dayTmp substringToIndex:1];
+    NSString *year = dateArray[2];
+    NSString *time = dateArray[3];
+    NSArray *timeArray = [time componentsSeparatedByString:@":"];
+    NSString *hour = timeArray[0];
+    NSUInteger intHour = [hour intValue];
+    NSString *minute = timeArray[1];
+    NSString *second = timeArray[2];
+    NSString *tt = dateArray[4];
+    if ([tt isEqualToString:@"PM"]) {
+        intHour += 12;
+    }
+    
+    NSString *retTime = [[NSString alloc]initWithFormat:@"%@年%@月%@日 %lu时%@分%@秒", year,month,day,(unsigned long)intHour,minute,second];
+    return retTime;
 }
 
 

@@ -7,12 +7,14 @@
 //
 
 #import "ShopCarViewController.h"
+#import "MBProgressHUD.h"
 
 @interface ShopCarViewController ()<UITableViewDataSource, UITableViewDelegate>
 {
 //    float allPrice;
 //    int foodNumber;
     NSMutableArray *shopCarDisplayList;
+    MBProgressHUD *HUD;
 }
 @end
 
@@ -27,19 +29,39 @@
     
     NSString *totalPriceText = [[NSString alloc] initWithFormat:@"￥%.1f", self.totalPrice ];
     self.totalPriceLaber.text = totalPriceText;
+    
     [self initTableViewData];
 }
 
 //初始化购物车列表,对传递过来的列表进行过滤处理,如果food_number为0,则不加入显示数据
 -(void) initTableViewData{
     shopCarDisplayList = [[NSMutableArray alloc] init];
-    for (NSDictionary *dic in self.shopCarInfo) {
-        NSString *food_number_cond = [dic valueForKey:@"food_number"];
-        if (![food_number_cond isEqualToString:@"0"]) {
-            [shopCarDisplayList addObject:dic];
+    HUD = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.view addSubview:HUD];
+    
+    //如果设置此属性则当前的view置于后台
+    HUD.dimBackground = YES;
+    
+    //设置对话框文字
+    HUD.labelText = @"努力加载中..";
+    
+    //显示对话框
+    [HUD showAnimated:YES whileExecutingBlock:^{
+        //对话框显示时需要执行的操作
+        //        sleep(3);
+        for (NSDictionary *dic in self.shopCarInfo) {
+            NSString *food_number_cond = [dic valueForKey:@"food_number"];
+            if (![food_number_cond isEqualToString:@"0"]) {
+                [shopCarDisplayList addObject:dic];
+            }
+            [self.shopCarInfoTableView reloadData];
         }
-        [self.shopCarInfoTableView reloadData];
-    }
+    } completionBlock:^{
+        //操作执行完后取消对话框
+        [HUD removeFromSuperview];
+        HUD = nil;
+    }];
+
 }
 
 

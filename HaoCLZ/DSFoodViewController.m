@@ -11,6 +11,7 @@
 #import "ShopCarViewController.h"
 #import "FoodDetailViewController.h"
 #import "UIImageView+WebCache.h"
+#import "MBProgressHUD.h"
 
 
 @interface DSFoodViewController ()
@@ -19,7 +20,7 @@
     NSMutableArray *_shopCarInfoArray;
     float allPrice;
     int foodNumber;
-
+    MBProgressHUD *HUD;
 }
 
 @end
@@ -29,9 +30,28 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self addMenuButton];
-    [self requestData];
     _shopCarInfoArray = [[NSMutableArray alloc] init];
+    [self addMenuButton];
+//    [self requestData];
+    HUD = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.view addSubview:HUD];
+    
+    //如果设置此属性则当前的view置于后台
+    HUD.dimBackground = YES;
+    
+    //设置对话框文字
+    HUD.labelText = @"努力加载中..";
+    
+    //显示对话框
+    [HUD showAnimated:YES whileExecutingBlock:^{
+        //对话框显示时需要执行的操作
+        //        sleep(3);
+        [self requestData];
+    } completionBlock:^{
+        //操作执行完后取消对话框
+        [HUD removeFromSuperview];
+        HUD = nil;
+    }];
 }
 
 #pragma mark - Request Data
@@ -90,7 +110,8 @@
     //设置食物图片,从url中下载
     NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [food valueForKey:@"food_pic"] ];
     NSURL *imageUrl = [NSURL URLWithString:stringURL];
-    [cell.food_pic sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"icon"]];
+//    [cell.food_pic sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"placeholder_img"]];
+    [cell.food_pic sd_setImageWithURL:imageUrl];
     //设置食品名称
     cell.food_name.text = [food valueForKey:@"food_name"];
     //设置食品介绍
@@ -98,7 +119,7 @@
     //设置食品数量,从_shopCarInfoArray取得,_shopCarInfoArray在做购物车增加删除操作时被更改
     cell.number.text = [_shopCarInfoArray[row] valueForKey:@"food_number"];
     //设置食品单价按钮标题为价格,圆角,点击执行加入购物车方法
-    NSString *price = [[NSString alloc] initWithFormat:@"￥%@", [food valueForKey:@"price"]];
+    NSString *price = [[NSString alloc] initWithFormat:@"￥%.1f", [[food valueForKey:@"price"] doubleValue]];
     [cell.buttonPrice setTitle:price forState:UIControlStateNormal];
     cell.buttonPrice.layer.cornerRadius = 5.0;
     [cell.buttonPrice setTag:indexPath.row];
@@ -201,13 +222,13 @@
     
     
     if ([segue.identifier isEqualToString:@"showShopCar"]) {
-        for (int i = 0; i < _shopCarInfoArray.count; i++) {
-            NSMutableDictionary *shopCarDic = _shopCarInfoArray[i];
-            NSString *food_number_cond = [shopCarDic valueForKey:@"food_number"];
-            if ([food_number_cond isEqualToString:@"0"]) {
-                [_shopCarInfoArray removeObject:shopCarDic];
-            }
-        }
+//        for (int i = 0; i < _shopCarInfoArray.count; i++) {
+//            NSMutableDictionary *shopCarDic = _shopCarInfoArray[i];
+//            NSString *food_number_cond = [shopCarDic valueForKey:@"food_number"];
+//            if ([food_number_cond isEqualToString:@"0"]) {
+//                [_shopCarInfoArray removeObject:shopCarDic];
+//            }
+//        }
         ShopCarViewController *scv = [[ShopCarViewController alloc] init];
         scv = segue.destinationViewController;
         scv.totalPrice = allPrice;

@@ -42,7 +42,11 @@
     [para setValue:self.password forKey:@"password"];
     [para setValue:self.mobile_textfield.text forKey:@"mobile"];
     [para setValue:self.email_textfield.text forKey:@"email"];
-    [para setValue:self.nickname_textfield.text forKey:@"nickname"];
+    //nickname 拉丁编码
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingISOLatin1);
+    NSString *nicknameString = [NSString stringWithCString:[self.nickname_textfield.text UTF8String] encoding:enc];
+    NSLog(@"%@", nicknameString);
+    [para setValue:nicknameString forKey:@"nickname"];
 
     MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:hostName customHeaderFields:nil];
     MKNetworkOperation *op = [engine operationWithPath:path params:para httpMethod:@"POST"];
@@ -83,9 +87,9 @@
     NSString * MOBILE = @"^1(3[0-9]|5[0-35-9]|8[025-9])\\d{8}$";
     /**
      10         * 中国移动：China Mobile
-     11         * 134[0-8],135,136,137,138,139,150,151,157,158,159,182,187,188
+     11         * 134[0-8],135,136,137,138,139,150,151,154,157,158,159,182,183,184,187,188,170-9
      12         */
-    NSString * CM = @"^1(34[0-8]|(3[5-9]|5[017-9]|8[278])\\d)\\d{7}$";
+    NSString * CM = @"^1(34[0-8]|(3[5-9]|5[0147-9]|8[23478]|7[0-9])\\d)\\d{7}$";
     /**
      15         * 中国联通：China Unicom
      16         * 130,131,132,152,155,156,185,186

@@ -9,12 +9,14 @@
 #import "NearByViewController.h"
 #import "BaiduMapViewController.h"
 #import "UIImageView+WebCache.h"
+#import "MBProgressHUD.h"
 
 @interface NearByViewController () <UITableViewDataSource, UITableViewDelegate, SINavigationMenuDelegate>
 {
     NSMutableArray *_shopList;
     SINavigationMenuView *_Navmenu;
     NSArray *itemsArray;
+    MBProgressHUD *HUD;
 }
 
 @end
@@ -25,10 +27,28 @@
     [super viewDidLoad];
     [self addMenuButton];
     [self addNavigationMenuView];
-    [self requestDataWithType:@"0"];
     [self addNavRightButton];
-
     itemsArray = @[@"社区店", @"校园店", @"商务店"];
+    HUD = [[MBProgressHUD alloc] initWithView:self.view];
+    [self.view addSubview:HUD];
+    
+    //如果设置此属性则当前的view置于后台
+    HUD.dimBackground = YES;
+    
+    //设置对话框文字
+    HUD.labelText = @"努力加载中..";
+    
+    //显示对话框
+    [HUD showAnimated:YES whileExecutingBlock:^{
+        //对话框显示时需要执行的操作
+        //        sleep(3);
+        [self requestDataWithType:@"0"];
+    } completionBlock:^{
+        //操作执行完后取消对话框
+        [HUD removeFromSuperview];
+        HUD = nil;
+    }];
+
 }
 
 -(void)addNavRightButton{
@@ -118,10 +138,12 @@
     NSMutableDictionary *shop = [_shopList[row] valueForKey:@"shops"];
     NSString *stringURL = [[NSString alloc] initWithFormat:@"http://%@", [shop valueForKey:@"shop_logo"] ];
     NSURL *imageUrl = [NSURL URLWithString:stringURL];
-    [cell.shop_logo sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"icon"]];
+//    [cell.shop_logo sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"placeholder_img"]];
+    [cell.shop_logo sd_setImageWithURL:imageUrl];
     cell.shop_name.text = [shop valueForKey:@"shop_name"];
     cell.stars.text =  [NSString stringWithFormat:@"%@",[shop valueForKey:@"stars"]];
-    NSString *string_others = [[NSString alloc] initWithFormat:@"共售出%@份/%@起送/%@送达", [shop valueForKey:@"sold_amount"], [shop valueForKey:@"deliver_charge"], [shop valueForKey:@"service_time"]];
+//    NSString *string_others = [[NSString alloc] initWithFormat:@"共售出%@份/%@起送/%@送达", [shop valueForKey:@"sold_amount"], [shop valueForKey:@"deliver_charge"], [shop valueForKey:@"service_time"]];
+     NSString *string_others = [[NSString alloc] initWithFormat:@"当前订单量:%@份", [shop valueForKey:@"sold_amount"]];
     cell.others.text = string_others;
     cell.introduce.text = [shop valueForKey:@"introduce"];
 
